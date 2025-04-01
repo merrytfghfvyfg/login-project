@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <form class="login-form" id="signUpForm">
+            <h2>Sign Up Form</h2>
+            <div class="input_textboxes">
+                <input type="text" id="fullname" name="fullname" placeholder="Full Name" required>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required>
+            </div>
+            
+            <button type="submit">Sign Up</button>
+            
+            <div class="links">
+                <a href="index.html">Already have an account? <b style="color: blue;">Login</b></a>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+        if (!localStorage.getItem("users")) {
+            localStorage.setItem("users", JSON.stringify([
+                { email: "test@example.com", password: "123456", fullname: "Test User" }
+            ]));
+        }
+
+        function login(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                localStorage.setItem("loggedInUser", JSON.stringify(user));
+                alert("Login successful!");
+                window.location.href = "landing_page.html";
+            } else {
+                alert("Incorrect email or password!");
+            }
+        }
+
+        function signUp(event) {
+            event.preventDefault();
+
+            const fullname = document.getElementById("fullname").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+            
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+            if (users.find(u => u.email === email)) {
+                alert("Email already exists!");
+                return;
+            }
+            
+            users.push({ fullname, email, password });
+            localStorage.setItem("users", JSON.stringify(users));
+            alert("Sign-up successful! You can now log in.");
+            window.location.href = "index.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const loginForm = document.getElementById("loginForm");
+            if (loginForm) {
+                loginForm.addEventListener("submit", login);
+            }
+            
+            const signUpForm = document.getElementById("signUpForm");
+            if (signUpForm) {
+                signUpForm.addEventListener("submit", signUp);
+            }
+        });
+</script>
+</html>
